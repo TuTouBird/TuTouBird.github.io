@@ -1,24 +1,98 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>BubbleSort</title>
-    <link rel="stylesheet" href="css/index.css">
+	<title>Bubble Background</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			height: 100vh;
+			background: #222;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			overflow: hidden;
+		}
 
+		canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
 
+		h1 {
+			color: white;
+			font-size: 4rem;
+			z-index: 1;
+		}
+	</style>
 </head>
 <body>
-<div class="bubbleBox" id="bubble_box">
-    <ul class="bubbles" id="circle">
-    </ul>
+	<canvas id="canvas"></canvas>
+	<h1>Hello World!</h1>
+	<script>
+		const canvas = document.getElementById("canvas");
+		const ctx = canvas.getContext("2d");
 
-</div>
-<div class="operation">
-    <p>请输入需要排序的数字，并以逗号隔开，或者直接输入希望产生随机数的个数。</p>
-    <input type="text" class="in" id="inputbox" value="请输入...">
-    <input type="submit" id="start_sort" value="开始排序">
-</div>
-<script type="text/javascript" src="js/bundle.js"></script>
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+
+		class Bubble {
+			constructor(x, y, radius, color) {
+				this.x = x;
+				this.y = y;
+				this.radius = radius;
+				this.color = color;
+				this.dx = Math.random() - 0.5;
+				this.dy = Math.random() - 0.5;
+				this.speed = Math.random() * 5 + 1;
+			}
+
+			draw() {
+				ctx.beginPath();
+				ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+				ctx.fillStyle = this.color;
+				ctx.fill();
+			}
+
+			update() {
+				if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
+					this.dx = -this.dx;
+				}
+				if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
+					this.dy = -this.dy;
+				}
+				this.x += this.dx * this.speed;
+				this.y += this.dy * this.speed;
+			}
+		}
+
+		const bubbles = [];
+
+		function init() {
+			for (let i = 0; i < 50; i++) {
+				const radius = Math.random() * 50 + 10;
+				const x = Math.random() * (canvas.width - radius * 2) + radius;
+				const y = Math.random() * (canvas.height - radius * 2) + radius;
+				const color = `hsla(${Math.random() * 360}, 100%, 50%, 0.8)`;
+				bubbles.push(new Bubble(x, y, radius, color));
+			}
+		}
+
+		function animate() {
+			requestAnimationFrame(animate);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			bubbles.forEach((bubble) => {
+				bubble.draw();
+				bubble.update();
+			});
+		}
+
+		init();
+		animate();
+	</script>
 </body>
 </html>
